@@ -3,177 +3,150 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Will you be my Valentine?</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Nunito:wght@300;400;700&display=swap" rel="stylesheet">
+  <title>For Nirali</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Nunito:wght@700&display=swap" rel="stylesheet">
   <style>
-    :root{
-      --rose:#ff5a8b;
-      --deep-rose:#c61f6d;
-      --muted:#6b6b6b;
-      --bg1:#fff0f6;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:'Nunito',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;}
-    body{
-      display:flex;align-items:center;justify-content:center;
-      background: radial-gradient(ellipse at 10% 10%, rgba(255,234,240,0.9), transparent 10%),
-                  linear-gradient(135deg,#fff0f6 0%, #ffeef2 40%, #fff 100%);
-      color:#333; overflow:hidden; padding:20px;
+    :root { --heart-color: #ff0a54; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center;
+      background-color: #fff0f3; font-family: 'Nunito', sans-serif; overflow: hidden;
     }
 
-    /* Floating hearts background */
-    .hearts{ position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:0; }
-    .heart{
-      position:absolute; width:18px; height:16px; transform:rotate(-45deg);
-      opacity:0.9; border-radius:3px 3px 0 0;
-    }
-    .heart:before, .heart:after{
-      content:""; position:absolute; width:18px; height:18px; border-radius:50%; top:-9px; left:0;
-    }
-    .heart:after{ left:9px; top:0; }
-    @keyframes floatUp {
-      0%{ transform: translateY(0) rotate(-45deg) scale(0.9); opacity:0;}
-      10%{ opacity:0.9; }
-      100%{ transform: translateY(-120vh) rotate(10deg) scale(1.2); opacity:0;}
+    .heart-container {
+      position: relative; width: 400px; height: 400px;
+      display: flex; align-items: center; justify-content: center;
+      animation: heartbeat 1.2s infinite;
     }
 
-    /* Main card */
-    .card{
-      background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,246,248,0.95));
-      border-radius:20px; padding:2rem; width:min(760px,96vw);
-      box-shadow:0 22px 50px rgba(198,31,109,0.12);
-      text-align:center; z-index:2; position:relative; border:1px solid rgba(255,200,215,0.6);
+    .heart-shape {
+      position: absolute; width: 250px; height: 250px;
+      background-color: var(--heart-color); transform: rotate(-45deg);
+      box-shadow: 0 0 60px rgba(255, 10, 84, 0.3);
     }
-    h1{ margin:0 0 0.8rem 0; font-family:'Playfair Display',serif; font-size:2.2rem; color:var(--deep-rose); }
-    p.lead{ margin:0 0 1rem 0; color:var(--muted); font-size:1rem; }
-    .img-wrap img{ border-radius:12px; max-width:120px; display:block; margin:0 auto 12px; }
 
-    /* Buttons Container */
-    .buttons{ display:flex; justify-content:center; gap:1rem; margin-top:1rem; position:relative; min-height:64px; }
-    
+    .heart-shape::before, .heart-shape::after {
+      content: ""; position: absolute; width: 250px; height: 250px;
+      background-color: var(--heart-color); border-radius: 50%;
+    }
+    .heart-shape::before { top: -125px; left: 0; }
+    .heart-shape::after { left: 125px; top: 0; }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      15% { transform: scale(1.08); }
+      30% { transform: scale(1.02); }
+      45% { transform: scale(1.05); }
+    }
+
+    .content { position: relative; z-index: 10; text-align: center; width: 320px; color: white; padding-top: 20px; }
+    h1 { font-family: 'Playfair Display', serif; font-size: 2rem; margin: 0; }
+    p { font-size: 1rem; margin: 10px 0 20px 0; opacity: 0.9; }
+
+    .buttons { display: flex; justify-content: center; gap: 15px; min-height: 50px; }
     button {
-      padding: 0.7rem 1.2rem; border-radius: 12px; border: none; font-size: 1rem;
-      font-weight: 700; cursor: pointer; transition: all 0.15s ease;
-      user-select: none; touch-action: none; z-index: 10;
+      padding: 10px 22px; border-radius: 50px; border: none; font-size: 0.95rem;
+      font-weight: 700; cursor: pointer; transition: all 0.3s ease;
     }
+    .btn-yes { background: #fff; color: var(--heart-color); z-index: 20; }
+    .btn-no { background: rgba(255,255,255,0.2); color: #fff; backdrop-filter: blur(5px); }
 
-    .btn-yes{ 
-      background:linear-gradient(90deg,var(--rose),var(--deep-rose)); color:#fff; 
-      box-shadow:0 10px 28px rgba(198,31,109,0.12);
+    .overlay {
+      position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.8); z-index: 99; opacity: 0; pointer-events: none; transition: 0.4s;
     }
-
-    .btn-no { background: #f1f3f5; color: #222; }
-
-    /* Success Overlay */
-    .overlay{ position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.36); z-index:99; opacity:0; pointer-events:none; transition:opacity .14s ease; }
-    .overlay.show{ opacity:1; pointer-events:auto; }
-    .modal{ background:#fff; padding:2rem; border-radius:20px; text-align:center; width:min(500px,90vw); box-shadow:0 18px 50px rgba(0,0,0,0.18); }
-    
-    .confetti-piece{ position:fixed; width:10px; height:16px; z-index:100; opacity:0; }
+    .overlay.show { opacity: 1; pointer-events: auto; }
+    .modal { background: #fff; padding: 40px; border-radius: 30px; text-align: center; width: 300px; }
   </style>
 </head>
 <body>
-  <div class="hearts" id="hearts"></div>
 
-  <main class="card">
-    <div class="img-wrap">
-      <img src="https://media.giphy.com/media/c7bcOcgD45J63v5F5O/giphy.gif" alt="cute cat">
+  <div class="heart-container">
+    <div class="heart-shape"></div>
+    <div class="content">
+      <h1>Lakshii,</h1>
+      <h1>Will you be my Valentine? ❤️</h1>
+      <p id="instruction">Catch the "Yes" button!</p>
+      <div class="buttons">
+        <button id="yesBtn" class="btn-yes">Yes, of course!</button>
+        <button id="noBtn" class="btn-no">No, sorry</button>
+      </div>
     </div>
-    <h1>Will you be my Valentine? ❤️</h1>
-    <p class="lead">I made this for you! You have to catch your answer...</p>
-
-    <div class="buttons" id="buttonRow">
-      <button id="yesBtn" class="btn-yes">Yes, of course!</button>
-      <button id="noBtn" class="btn-no">No, sorry</button>
-    </div>
-  </main>
+  </div>
 
   <div class="overlay" id="overlay">
     <div class="modal">
-      <h2>YAY! 🌹</h2>
-      <p>I knew you'd say yes eventually! You're the best. 💖</p>
-      <button onclick="location.reload()" style="padding: 10px; margin-top: 10px; cursor: pointer; border-radius: 8px; border: none; background: #eee;">Restart</button>
+      <h2 style="color: #ff0a54; margin:0;">I LOVE YOU! 🌹</h2>
+      <p style="color:#333;">I knew you'd say yes, Lakshii! 💖</p>
+      <button onclick="location.reload()" style="background:#eee; padding:10px 20px; border:none; border-radius:10px; cursor:pointer;">Restart</button>
     </div>
   </div>
 
   <script>
-    // 1. Decorative Floating Hearts
-    (function createHearts(){
-      const hearts = document.getElementById('hearts');
-      for(let i=0; i<15; i++){
-        const el = document.createElement('div');
-        el.className = 'heart';
-        const size = 10 + Math.random()*30;
-        el.style.width = size + 'px'; el.style.height = (size * 0.9) + 'px';
-        el.style.left = Math.random()*100 + '%'; el.style.top = '100%';
-        el.style.background = 'linear-gradient(180deg,#ff7aa5,#ff4d6d)';
-        el.style.animation = `floatUp ${8 + Math.random()*10}s linear infinite`;
-        hearts.appendChild(el);
-      }
-    })();
-
-    // 2. Logic for runaway buttons
     const yesBtn = document.getElementById('yesBtn');
     const noBtn = document.getElementById('noBtn');
+    const instruction = document.getElementById('instruction');
     const overlay = document.getElementById('overlay');
+    
     let yesAttempts = 0;
+    const MAX_ATTEMPTS = 4;
 
-    const moveBtn = (btn) => {
-      btn.style.position = 'fixed';
-      const x = Math.random() * (window.innerWidth - btn.offsetWidth - 20);
-      const y = Math.random() * (window.innerHeight - btn.offsetHeight - 20);
-      btn.style.left = `${x}px`;
-      btn.style.top = `${y}px`;
-    };
+    function moveElement(el) {
+      el.style.position = 'fixed';
+      const x = Math.random() * (window.innerWidth - 150) + 75;
+      const y = Math.random() * (window.innerHeight - 150) + 75;
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+    }
 
-    // "No" button: Forever running away
-    const runawayNo = (e) => {
-      if (e.type === 'touchstart') e.preventDefault();
-      moveBtn(noBtn);
-    };
-    noBtn.addEventListener('mouseenter', runawayNo);
-    noBtn.addEventListener('touchstart', runawayNo);
+    // No Button logic
+    noBtn.addEventListener('mouseover', () => moveElement(noBtn));
+    noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveElement(noBtn); });
 
-    // "Yes" button: Moves 5 times, then becomes clickable
-    const handleYes = (e) => {
-      // Changed limit to 5 tries
-      if (yesAttempts < 5) {
-        if (e.type === 'touchstart') e.preventDefault();
-        moveBtn(yesBtn);
+    // Yes Button logic
+    function handleYesInteraction(e) {
+      if (yesAttempts < MAX_ATTEMPTS) {
+        // Prevent clicking/touching while it's still in "flee" mode
+        if (e.type === 'touchstart' || e.type === 'click') {
+          e.preventDefault();
+        }
+        moveElement(yesBtn);
         yesAttempts++;
-        // Note: Text stays exactly "Yes, of course!" as requested
+
+        if (yesAttempts === MAX_ATTEMPTS) {
+          instruction.textContent = "Caught it! Click it now! ❤️";
+          yesBtn.style.position = 'relative'; // Bring it back to center for final click
+          yesBtn.style.left = '0';
+          yesBtn.style.top = '0';
+          yesBtn.style.boxShadow = "0 0 20px #fff";
+          yesBtn.style.transform = "scale(1.2)";
+        }
       } else {
-        // Only trigger overlay on actual click after 5 moves
+        // Only trigger the win once attempts are done and it's a real click
         if (e.type === 'click') {
           overlay.classList.add('show');
-          runConfetti();
         }
       }
-    };
-
-    // Move on hover if attempts < 5
-    yesBtn.addEventListener('mouseenter', (e) => { 
-        if(yesAttempts < 5) handleYes(e); 
-    });
-    
-    // Handle click and mobile touch
-    yesBtn.addEventListener('click', handleYes);
-    yesBtn.addEventListener('touchstart', handleYes);
-
-    // 3. Victory Confetti
-    function runConfetti(){
-      for(let i=0; i<50; i++){
-        const el = document.createElement('div');
-        el.className = 'confetti-piece';
-        el.style.background = ['#ff5a8b','#ffd166','#c61f6d'][Math.floor(Math.random()*3)];
-        el.style.left = '50%'; el.style.top = '40%';
-        document.body.appendChild(el);
-        const dx = (Math.random()*1000 - 500);
-        const dy = -(200 + Math.random()*700);
-        el.animate([{ transform: `translate(0,0)`, opacity:1 }, { transform: `translate(${dx}px, ${dy}px) rotate(360deg)`, opacity:0 }], { duration: 2000, easing: 'ease-out' });
-        setTimeout(() => el.remove(), 2000);
-      }
     }
+
+    // Trigger move on hover
+    yesBtn.addEventListener('mouseover', () => {
+      if (yesAttempts < MAX_ATTEMPTS) {
+        moveElement(yesBtn);
+        yesAttempts++;
+        if (yesAttempts === MAX_ATTEMPTS) {
+          instruction.textContent = "Caught it! Click it now! ❤️";
+          yesBtn.style.position = 'relative';
+          yesBtn.style.left = '0';
+          yesBtn.style.top = '0';
+          yesBtn.style.transform = "scale(1.2)";
+        }
+      }
+    });
+
+    yesBtn.addEventListener('click', handleYesInteraction);
+    yesBtn.addEventListener('touchstart', handleYesInteraction);
+
   </script>
 </body>
 </html>
